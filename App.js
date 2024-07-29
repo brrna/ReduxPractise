@@ -1,13 +1,14 @@
 import { NavigationContainer } from '@react-navigation/native';
 import Router from './pages/router/Router';
-import UserProvider from './context/Provider';
+import { Provider } from 'react-redux';
+import { Store } from './context/Store';
 
 export default function App() {
   return (
-    <UserProvider>
+    <Provider store={Store} >
       <NavigationContainer>
         <Router />
       </NavigationContainer>
-    </UserProvider>
+    </Provider>
   );
 }

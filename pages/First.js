@@ -1,37 +1,25 @@
-import { SafeAreaView, StyleSheet, View, TextInput, Button } from 'react-native'
-import React, { useState } from 'react'
-import { useDispatch } from 'react-redux';
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
+import React from 'react'
+import MyButton from '../components/MyButton'
+import { useDispatch, useSelector } from 'react-redux'
+import { increase, decrease, refresh } from '../context/Slice' //fonksiyonlara bak
 
 const First = () => {
 
-    const [text, setText] = useState("");
+    //statein mevcut değerini elde etmek için kullanılır
+    const counter = useSelector((state) => state.counter);
+
+    //actionları doğrudan kullanamayız bunun için ihtiyaç
     const dispatch = useDispatch();
-
-    const handleAdd = () => {
-        dispatch({type: "ADD_LIST", payload: {name: text} })
-    }
-
-    const handleClean = () => {
-        dispatch({type: "CLEAN_LIST"})
-    }
 
     return (
         <SafeAreaView style={styles.container} >
-            <View style={styles.inputView} >
-                <TextInput
-                    value={text}
-                    onChangeText={setText}
-                    placeholder='İsim giriniz...'
-                />
+            <Text style={styles.text} >{counter.count}</Text>
+            <View style={styles.frame} >
+                <MyButton text={"+"} onPress={() => dispatch(increase())} />
+                <MyButton text={"-"} onPress={() => dispatch(decrease())} />
+                <MyButton text={"0"} onPress={() => dispatch(refresh())} />
             </View>
-            <Button
-                style={styles.button}
-                title='add'
-                onPress={handleAdd} />
-            <Button 
-                style={styles.button}
-                title='delete'
-                onPress={handleClean} />
         </SafeAreaView>
     )
 }
@@ -41,20 +29,18 @@ export default First
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
+        justifyContent: "space-around"
     },
-    inputView: {
-        borderColor: "green",
-        borderWidth: 1,
-        height: 50,
-        width: 350,
-        justifyContent: "center",
-        padding: 7
+    frame: {
+        height: 300,
+        width: 300,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between"
     },
-    button: {
-        height: 100,
-        width: 50,
-        marginTop: 20
+    text: {
+        fontWeight: "bold",
+        fontSize: 100
     }
 })
