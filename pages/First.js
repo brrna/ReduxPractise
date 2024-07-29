@@ -3,6 +3,7 @@ import React from 'react'
 import MyButton from '../components/MyButton'
 import { useDispatch, useSelector } from 'react-redux'
 import { increase, decrease, refresh } from '../context/Slice' //fonksiyonlara bak
+import MyInput from '../components/MyInput'
 
 const First = () => {
 
@@ -14,6 +15,7 @@ const First = () => {
 
     return (
         <SafeAreaView style={styles.container} >
+            <MyInput />
             <Text style={styles.text} >{counter.count}</Text>
             <View style={styles.frame} >
                 <MyButton text={"+"} onPress={() => dispatch(increase())} />

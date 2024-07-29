@@ -7,7 +7,11 @@ const Slice = createSlice({
 
     //global stateler belirlendi
     initialState: { 
-        count: 0
+        count: 0,
+        person: {
+            name: "Berna",
+            surname: "Varol"
+        }
     },
 
     //stateleri manipüle edecek olan actionslar belirlendi
@@ -20,12 +24,22 @@ const Slice = createSlice({
         },
         refresh(state) {
             state.count = 0;
+        },
+
+        //action; statein yeni bilgilerini taşıyan payload içerir
+        //payload 
+        setPerson(state, action) {
+            const name = action.payload.name;
+            const surname = action.payload.surname;
+
+            state.person.name = name;
+            state.person.surname = surname;
         }
     }
 });
 
 //actionsları kullanıma açtık
-export const {increase, decrease, refresh} = Slice.actions;
+export const {increase, decrease, refresh, setPerson} = Slice.actions;
 
 //Slice ı dışarıya açtık
 export default Slice;
