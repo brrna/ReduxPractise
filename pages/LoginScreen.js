@@ -1,18 +1,19 @@
 import { StyleSheet, Text, SafeAreaView, StatusBar } from 'react-native'
-import React, { useState } from 'react'
+import React from 'react'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen'
 import MyButton from '../component/myButton/MyButton'
 import MyInput from '../component/myInput/MyInput'
 import Loading from '../component/loading/Loading'
 import { useNavigation } from '@react-navigation/native'
+import { useDispatch, useSelector } from 'react-redux'
+import { setEmail, setLoading, setPassword, setLogin } from '../redux/userSlice'
 
 const LoginScreen = () => {
 
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [loading, setLoading] = useState(false);
-
     const navigation = useNavigation();
+    const dispatch = useDispatch();
+
+    const {email, password, loading} = useSelector((state) => state.user);
 
     return (
         <SafeAreaView style={styles.container} >
@@ -24,18 +25,18 @@ const LoginScreen = () => {
                 text={"E-mail"}
                 value={email}
                 placeholder={"adınızı girin"}
-                onChangeText={setEmail}
+                onChangeText={(email) => dispatch(setEmail(email))}
                 inputMode="email" />
 
             <MyInput
                 text={"Password"}
                 value={password}
                 placeholder={"soyadınızı girin"}
-                onChangeText={setPassword}
+                onChangeText={(password) => dispatch(setPassword(password))}
                 secureTextEntry={true} />
 
             <MyButton
-                onPress={() => setLoading(true)}
+                onPress={() => dispatch(setLogin(true))}
                 buttonName={"giriş yap"} />
 
             <MyButton
@@ -45,7 +46,7 @@ const LoginScreen = () => {
             {
                 loading ?
                     <Loading
-                        onPress={() => setLoading(false)} />
+                        onPress={() => dispatch(setLoading(false))} />
                     :
                     null
             }
