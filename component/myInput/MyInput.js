@@ -2,7 +2,7 @@ import { StyleSheet, Text, TextInput, View } from 'react-native'
 import React from 'react'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen'
 
-const MyInput = ({ placeholder, onChangeText, text, value }) => {
+const MyInput = ({ placeholder, onChangeText, text, value, secureTextEntry, inputMode }) => {
     return (
         <View style={styles.container} >
             <Text>{text}</Text>
@@ -10,7 +10,9 @@ const MyInput = ({ placeholder, onChangeText, text, value }) => {
                 style={styles.input}
                 value={value}
                 placeholder={placeholder}
-                onChangeText={onChangeText} />
+                onChangeText={onChangeText}
+                secureTextEntry={secureTextEntry}
+                inputMode={inputMode} />
         </View>
     )
 }

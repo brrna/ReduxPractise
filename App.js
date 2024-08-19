@@ -3,33 +3,45 @@ import { SafeAreaView, StatusBar, Text, StyleSheet } from "react-native";
 import MyInput from "./component/myInput/MyInput";
 import MyButton from "./component/myButton/MyButton";
 import { heightPercentageToDP } from "react-native-responsive-screen";
+import Loading from "./component/loading/Loading";
 
 export default function App() {
 
-  const [name, setName] = useState("");
-  const [lastname, setLastname] = useState("");
-  const [result, setResult] = useState("")
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [result, setResult] = useState("");
+  const [loading, setLoading] = useState(false);
 
   return (
     <SafeAreaView style={styles.container} >
       <StatusBar />
 
-      <Text style={styles.text} >welcome {result}</Text>
+      <Text style={styles.text} >welcome</Text>
 
       <MyInput
-        text={"Adınız"}
-        value={name}
+        text={"E-mail"}
+        value={email}
         placeholder={"adınızı girin"}
-        onChangeText={setName} />
+        onChangeText={setEmail}
+        inputMode="email" />
 
-        <MyInput
-        text={"Soyadınız"}
-        value={lastname}
+      <MyInput
+        text={"Password"}
+        value={password}
         placeholder={"soyadınızı girin"}
-        onChangeText={setLastname} />
+        onChangeText={setPassword}
+        secureTextEntry={true} />
 
-        <MyButton
-          onPress={() => setResult(name + " " + lastname)} />
+      <MyButton
+        onPress={() => setLoading(true)} />
+
+      {
+        loading ?
+          <Loading 
+            onPress={() => setLoading(false)} />
+          :
+          null
+      }
 
     </SafeAreaView>
   );
@@ -43,6 +55,7 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   text: {
-    fontSize: heightPercentageToDP(4)
+    fontSize: heightPercentageToDP(4),
+    fontWeight: "bold"
   }
 })
