@@ -36,11 +36,11 @@ const LoginScreen = () => {
 
             <MyButton
                 onPress={() => setLoading(true)}
-                buttonName={"save"} />
+                buttonName={"giriş yap"} />
 
             <MyButton
                 onPress={() => navigation.navigate("SignUp")}
-                buttonName={"kaydol"} />
+                buttonName={"kayıt ol"} />
 
             {
                 loading ?
