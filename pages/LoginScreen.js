@@ -1,19 +1,23 @@
 import { StyleSheet, Text, SafeAreaView, StatusBar } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen'
 import MyButton from '../component/myButton/MyButton'
 import MyInput from '../component/myInput/MyInput'
 import Loading from '../component/loading/Loading'
 import { useNavigation } from '@react-navigation/native'
 import { useDispatch, useSelector } from 'react-redux'
-import { setEmail, setLoading, setPassword, setLogin } from '../redux/userSlice'
+import { setLoading} from '../redux/userSlice'
+import { login } from '../redux/userSlice'
 
 const LoginScreen = () => {
 
     const navigation = useNavigation();
     const dispatch = useDispatch();
 
-    const {email, password, loading} = useSelector((state) => state.user);
+    const {loading} = useSelector((state) => state.user);
+
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
     return (
         <SafeAreaView style={styles.container} >
@@ -25,18 +29,18 @@ const LoginScreen = () => {
                 text={"E-mail"}
                 value={email}
                 placeholder={"adınızı girin"}
-                onChangeText={(email) => dispatch(setEmail(email))}
+                onChangeText={(text) => setEmail(text)}
                 inputMode="email" />
 
             <MyInput
                 text={"Password"}
                 value={password}
                 placeholder={"soyadınızı girin"}
-                onChangeText={(password) => dispatch(setPassword(password))}
+                onChangeText={(text) => setPassword(text)}
                 secureTextEntry={true} />
 
             <MyButton
-                onPress={() => dispatch(setLogin(true))}
+                onPress={() => dispatch(login({email, password}))}
                 buttonName={"giriş yap"} />
 
             <MyButton
