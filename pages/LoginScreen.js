@@ -14,10 +14,15 @@ const LoginScreen = () => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
 
-    const {loading} = useSelector((state) => state.user);
+    const loading = useSelector((state) => state.user);
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+
+    const girisYap = () => {
+        dispatch(login({email, password}));
+        navigation.navigate("Home")
+    }
 
     return (
         <SafeAreaView style={styles.container} >
@@ -40,21 +45,12 @@ const LoginScreen = () => {
                 secureTextEntry={true} />
 
             <MyButton
-                onPress={() => dispatch(login({email, password}))}
+                onPress={girisYap}
                 buttonName={"giriş yap"} />
 
             <MyButton
                 onPress={() => navigation.navigate("SignUp")}
                 buttonName={"kayıt ol"} />
-
-            {
-                loading ?
-                    <Loading
-                        onPress={() => dispatch(setLoading(false))} />
-                    :
-                    null
-            }
-
 
 
         </SafeAreaView>

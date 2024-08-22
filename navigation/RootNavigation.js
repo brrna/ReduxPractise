@@ -7,7 +7,7 @@ import app from "../firebaseConfig"
 
 const RootNavigation = () => {
 
-    const { isAuth } = useSelector((state) => state.user)
+    const {isAuth} = useSelector((state) => state.user)
 
     return (
         <NavigationContainer>
