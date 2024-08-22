@@ -1,6 +1,6 @@
 import { SafeAreaView, StyleSheet } from 'react-native'
 import React, { useState } from 'react'
-import { collection, addDoc, getDocs } from 'firebase/firestore';
+import { collection, addDoc, getDocs, doc, deleteDoc, updateDoc } from 'firebase/firestore';
 import { db } from "../firebaseConfig"
 import MyButton from '../component/myButton/MyButton';
 
@@ -9,6 +9,7 @@ const HomeScreen = () => {
   const [data, setData] = useState([]);
   console.log("data", data)
 
+  //SEND DATA TO FIREBASE
   const sendData = async() => {
     try {
       const docRef = await addDoc(collection(db, "ReactNativeLesson"), {
@@ -22,6 +23,7 @@ const HomeScreen = () => {
     }
   }
 
+  //GET DATA FROM FIREBASE
   const getData = async() => {
     const querySnapshot = await getDocs(collection(db, "ReactNativeLesson"));
     querySnapshot.forEach((doc) => {
@@ -29,6 +31,24 @@ const HomeScreen = () => {
       setData(doc.data())
       console.log("clicked")
     })
+  }
+
+  //DELETE DATA FROM FIREBASE
+  const deleteData = async() => {
+    await deleteDoc(doc(db, "ReactNativeLesson", "CQiSXpMzBO5sOQRrYgzA"));
+    console.log("delete clicek")
+  }
+
+  //UPDATE DATA
+  const updateData = async() => {
+    try {
+      const lessonData = doc(db, "ReactNativeLesson", "feOXhW0n0Pq4k2cEpiU8");
+      await updateDoc(lessonData, {
+        lesson: 1
+      });
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
@@ -39,6 +59,12 @@ const HomeScreen = () => {
       <MyButton 
         buttonName={"get data"}
         onPress={getData} />
+      <MyButton 
+        buttonName={"delete data"}
+        onPress={deleteData} />
+      <MyButton 
+        buttonName={"update data"}
+        onPress={updateData} />
     </SafeAreaView>
   )
 }

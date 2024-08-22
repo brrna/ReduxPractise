@@ -21,7 +21,7 @@ const LoginScreen = () => {
 
     const girisYap = () => {
         dispatch(login({email, password}));
-        navigation.navigate("Home")
+        navigation.navigate("HomeScreen")
     }
 
     return (
