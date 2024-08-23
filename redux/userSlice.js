@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 //AsyncThunk fonksiyonuncevap gelene kadar beklemesini sağlıyor. 
 //Üç seçenek sunuyor; yükleniyor, yüklendi, reddedildi
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const login = createAsyncThunk('user/login', async({email, password}) => {
     try {
@@ -14,7 +15,9 @@ export const login = createAsyncThunk('user/login', async({email, password}) => 
         const userData = {
             token, 
             user: user,
-        }
+        };
+
+        await AsyncStorage.setItem("userToken", token);
 
         return userData;
 
@@ -23,6 +26,20 @@ export const login = createAsyncThunk('user/login', async({email, password}) => 
         throw error
     }
 } )
+
+//kullanıcı otomatik giriş işlermleri
+export const autoLogin = createAsyncThunk('user/autoLogin', async() => {
+    try {
+        const token = await AsyncStorage.getItem("userToken")
+        if (token) {
+            return token
+        } else {
+            throw new Error("user not found")
+        }
+    } catch (error) {
+        throw error
+    }
+})
 
 const initialState = {
     loading: false,
@@ -64,6 +81,21 @@ const userSlice = createSlice({
                 state.loading = false;
                 state.isAuth = false;
                 state.error = action.error.message;
+            })
+
+            .addCase(autoLogin.pending, (state) =>{
+                state.loading = true;
+                state.isAuth = false;
+            })
+            .addCase(autoLogin.fulfilled, (state, action) =>{
+                state.loading = false;
+                state.isAuth = true;
+                state.token = action.payload;
+            })
+            .addCase(autoLogin.rejected, (state, action) =>{
+                state.loading = false;
+                state.isAuth = false;
+                state.token = null;
             })
     }
 })

@@ -1,11 +1,11 @@
 import { StyleSheet, Text, SafeAreaView, StatusBar } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen'
 import MyButton from '../component/myButton/MyButton'
 import MyInput from '../component/myInput/MyInput'
 import { useNavigation } from '@react-navigation/native'
 import { useDispatch, useSelector } from 'react-redux'
-import { login } from '../redux/userSlice'
+import { login, autoLogin } from '../redux/userSlice'
 
 const LoginScreen = () => {
 
@@ -21,6 +21,11 @@ const LoginScreen = () => {
         dispatch(login({email, password}));
         navigation.navigate("HomeScreen")
     }
+
+    //kullanıcı daha önce giriş yaptıysa kontrol et ve otomatik giriş yap
+    useEffect(() => {
+        dispatch(autoLogin)
+    }, [])
 
     return (
         <SafeAreaView style={styles.container} >
