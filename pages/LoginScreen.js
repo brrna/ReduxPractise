@@ -3,10 +3,8 @@ import React, { useState } from 'react'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen'
 import MyButton from '../component/myButton/MyButton'
 import MyInput from '../component/myInput/MyInput'
-import Loading from '../component/loading/Loading'
 import { useNavigation } from '@react-navigation/native'
 import { useDispatch, useSelector } from 'react-redux'
-import { setLoading} from '../redux/userSlice'
 import { login } from '../redux/userSlice'
 
 const LoginScreen = () => {

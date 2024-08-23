@@ -1,16 +1,22 @@
-import { SafeAreaView, StyleSheet } from 'react-native'
-import React, { useState } from 'react'
+import { SafeAreaView, StyleSheet, View, Text, Pressable } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { collection, addDoc, getDocs, doc, deleteDoc, updateDoc } from 'firebase/firestore';
 import { db } from "../firebaseConfig"
 import MyButton from '../component/myButton/MyButton';
+import MyInput from "../component/myInput/MyInput";
 
 const HomeScreen = () => {
 
   const [data, setData] = useState([]);
-  console.log("data", data)
+  const [saved, setSaved] = useState(false);
+  const [update, setUpdate] = useState("");
+
+  useEffect(() => {
+    getData();
+  }, [saved])
 
   //SEND DATA TO FIREBASE
-  const sendData = async() => {
+  const sendData = async () => {
     try {
       const docRef = await addDoc(collection(db, "ReactNativeLesson"), {
         title: "zero to hero",
@@ -24,27 +30,37 @@ const HomeScreen = () => {
   }
 
   //GET DATA FROM FIREBASE
-  const getData = async() => {
-    const querySnapshot = await getDocs(collection(db, "ReactNativeLesson"));
-    querySnapshot.forEach((doc) => {
-      //console.log(`${doc.id} => ${doc.data()} `);
-      setData(doc.data())
-      console.log("clicked")
-    })
+  const getData = async () => {
+    const allData = []
+    try {
+      const querySnapshot = await getDocs(collection(db, "ReactNativeLesson"));
+      querySnapshot.forEach((doc) => {
+        //console.log(`${doc.id} => ${doc.data()} `);
+        allData.push({...doc.data(), id: doc.id})
+      });
+      setData(allData)
+    } catch (error) {
+      console.log(error)
+    }
+
   }
 
   //DELETE DATA FROM FIREBASE
-  const deleteData = async() => {
-    await deleteDoc(doc(db, "ReactNativeLesson", "CQiSXpMzBO5sOQRrYgzA"));
-    console.log("delete clicek")
+  const deleteData = async(value) => {
+    try {
+      await deleteDoc(doc(db, "ReactNativeLesson", value));
+      console.log("delete succesful")
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   //UPDATE DATA
-  const updateData = async() => {
+  const updateData = async(value) => {
     try {
-      const lessonData = doc(db, "ReactNativeLesson", "feOXhW0n0Pq4k2cEpiU8");
+      const lessonData = doc(db, "ReactNativeLesson", value);
       await updateDoc(lessonData, {
-        lesson: 1
+        lesson: update
       });
     } catch (error) {
       console.log(error)
@@ -53,18 +69,42 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView style={styles.container} >
-      <MyButton 
+
+      {data.map((value, index) => {
+        return(
+          <Pressable 
+            key={index}
+            onPress={() => {updateData(value.id), setSaved(saved === false ? true : false)}} >
+            <Text>{value?.id}</Text>
+            <Text>{value.title}</Text>
+            <Text>{value.content}</Text>
+            <Text>{value.lesson}</Text>
+          </Pressable>
+        )
+      })}
+
+      <MyInput 
+        value={update}
+        placeholder={"enter your lesson"}
+        onChangeText={setUpdate}
+         />
+
+      <MyButton
         buttonName={"send data"}
-        onPress={sendData} />
-      <MyButton 
+        onPress={() => {sendData(), setSaved(saved === false ? true : false)}} />
+
+      <MyButton
         buttonName={"get data"}
         onPress={getData} />
-      <MyButton 
+
+      <MyButton
         buttonName={"delete data"}
         onPress={deleteData} />
-      <MyButton 
+
+      <MyButton
         buttonName={"update data"}
         onPress={updateData} />
+
     </SafeAreaView>
   )
 }
