@@ -4,8 +4,12 @@ import { collection, addDoc, getDocs, doc, deleteDoc, updateDoc } from 'firebase
 import { db } from "../firebaseConfig"
 import MyButton from '../component/myButton/MyButton';
 import MyInput from "../component/myInput/MyInput";
+import { useDispatch } from 'react-redux';
+import { logout } from '../redux/userSlice';
 
 const HomeScreen = () => {
+
+  const dispatch = useDispatch();
 
   const [data, setData] = useState([]);
   const [saved, setSaved] = useState(false);
@@ -67,6 +71,11 @@ const HomeScreen = () => {
     }
   }
 
+  //LOG OUT
+  const handleLogout = () => {
+    dispatch(logout())
+  }
+
   return (
     <SafeAreaView style={styles.container} >
 
@@ -104,6 +113,10 @@ const HomeScreen = () => {
       <MyButton
         buttonName={"update data"}
         onPress={updateData} />
+
+      <MyButton 
+        buttonName={"log out"}
+        onPress={handleLogout} />
 
     </SafeAreaView>
   )

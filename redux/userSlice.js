@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 //AsyncThunk fonksiyonuncevap gelene kadar beklemesini sağlıyor. 
 //Üç seçenek sunuyor; yükleniyor, yüklendi, reddedildi
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const login = createAsyncThunk('user/login', async({email, password}) => {
@@ -41,6 +41,19 @@ export const autoLogin = createAsyncThunk('user/autoLogin', async() => {
     }
 })
 
+//kullanıcı çıkış işlemleri
+export const logout = createAsyncThunk('user/logout', async() => {
+    try {
+        const auth = getAuth()
+        await signOut(auth)
+
+        await AsyncStorage.removeItem("userToken")
+        return null;
+    } catch (error) {
+        throw error
+    }
+})
+
 const initialState = {
     loading: false,
     isAuth: false,
@@ -67,6 +80,7 @@ const userSlice = createSlice({
 
     extraReducers: (builder) => {
         builder
+            //login
             .addCase(login.pending, (state) => {
                 state.loading = true;
                 state.isAuth = false;
@@ -83,6 +97,7 @@ const userSlice = createSlice({
                 state.error = action.error.message;
             })
 
+            //autologin
             .addCase(autoLogin.pending, (state) =>{
                 state.loading = true;
                 state.isAuth = false;
@@ -96,6 +111,21 @@ const userSlice = createSlice({
                 state.loading = false;
                 state.isAuth = false;
                 state.token = null;
+            })
+
+            //logout
+            .addCase(logout.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(logout.fulfilled, (state, action) => {
+                state.loading = false;
+                state.isAuth = false;
+                state.token = null;
+                state.error = null;
+            })
+            .addCase(logout.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
             })
     }
 })
