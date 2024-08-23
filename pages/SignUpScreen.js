@@ -2,6 +2,8 @@ import { SafeAreaView, StyleSheet } from 'react-native'
 import React, { useState } from 'react'
 import MyInput from '../component/myInput/MyInput'
 import MyButton from '../component/myButton/MyButton'
+import { useDispatch, useSelector } from 'react-redux'
+import { register } from '../redux/userSlice'
 
 const SignUpScreen = () => {
 
@@ -9,12 +11,22 @@ const SignUpScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const dispatch = useDispatch();
+
+  const {loading} = useSelector((state) => state.user);
+
+  const handleRegister = () => {
+    dispatch(register({email, password}))
+    console.log("register")
+  }
+
   return (
     <SafeAreaView style={styles.container} >
-      <MyInput
+
+      <MyInput 
         text={"name"}
         value={name}
-        placeholder={"isminizi girin"}
+        placeholder={"name"}
         onChangeText={setName} />
 
       <MyInput
@@ -31,7 +43,7 @@ const SignUpScreen = () => {
 
       <MyButton
         buttonName={"kaydol"}
-        onPress={() => console.log("clicked")} />
+        onPress={handleRegister} />
     </SafeAreaView>
   )
 }

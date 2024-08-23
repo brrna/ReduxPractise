@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 //AsyncThunk fonksiyonuncevap gelene kadar beklemesini sağlıyor. 
 //Üç seçenek sunuyor; yükleniyor, yüklendi, reddedildi
-import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth, sendEmailVerification, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const login = createAsyncThunk('user/login', async({email, password}) => {
@@ -49,6 +49,24 @@ export const logout = createAsyncThunk('user/logout', async() => {
 
         await AsyncStorage.removeItem("userToken")
         return null;
+    } catch (error) {
+        throw error
+    }
+})
+
+//kayıt işlemi
+export const register = createAsyncThunk('user/register', async({email, password}) => {
+    try {
+        const auth = getAuth();
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+
+        const user = userCredential.user
+        const token = user.stsTokenManager.accessToken;
+
+        await sendEmailVerification(user)
+
+        await AsyncStorage.setItem("userToken", token)
+        return token;
     } catch (error) {
         throw error
     }
@@ -126,6 +144,22 @@ const userSlice = createSlice({
             .addCase(logout.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
+            })
+
+            //register
+            .addCase(register.pending, (state) => {
+                state.loading = true;
+                state.isAuth = false;
+            })
+            .addCase(register.fulfilled, (state, action) => {
+                state.loading = false;
+                state.isAuth = true;
+                state.token = action.payload;
+            })
+            .addCase(register.rejected, (state) => {
+                state.loading = false;
+                state.isAuth = false;
+                state.error = "invalid email or password"
             })
     }
 })
